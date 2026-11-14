@@ -1403,7 +1403,7 @@ document.addEventListener('click',async e=>{
  const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a;
  if(a==='tab'){tab=b.dataset.k;$('#sb').classList.remove('open');render();scrollTo(0,0)}
  if(a==='menu')$('#sb').classList.toggle('open');
- if(a==='out'){SES=null;lk='';try{localStorage.removeItem('bc_s')}catch(_){}render()}
+ if(a==='out'){SES=null;lk='';try{localStorage.removeItem('bc_s')}catch(_){}try{if(window.bahiaDB)await window.bahiaDB.signOut()}catch(_){}window.BAHIA_ME=null;location.replace('index.html');return}
  if(a==='x')close_();
  if(!db&&!['tab','x','go','sim','ncon','cidvia'].includes(a))return;
  if(a==='addcli'){const nome=$('#cn').value.trim();if(!nome)return;const c={id:uid(),nome,tel:$('#ct').value.trim(),cpf:$('#cc').value.trim()};await db.collection('clients').doc(c.id).set(c)}
