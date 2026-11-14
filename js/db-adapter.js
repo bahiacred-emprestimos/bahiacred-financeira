@@ -100,8 +100,13 @@
   db.signOut = function () { return sb.auth.signOut(); };
   db.session = function () { return sb.auth.getSession().then(function (r) { return r.data.session; }); };
   db.perfil = function () {
-    return sb.from('profiles').select('nome,funcao,agent_id').maybeSingle().then(function (r) {
-      if (r.error) throw r.error; return r.data;
+    // Busca só o perfil do usuário logado (evita 'multiple rows' quando o admin enxerga todos)
+    return sb.auth.getSession().then(function (ses) {
+      var s = ses && ses.data && ses.data.session;
+      if (!s) return null;
+      return sb.from('profiles').select('nome,funcao,agent_id').eq('id', s.user.id).maybeSingle().then(function (r) {
+        if (r.error) throw r.error; return r.data;
+      });
     });
   };
   db.storage = sb.storage; // anexos (bucket privado 'anexos')
