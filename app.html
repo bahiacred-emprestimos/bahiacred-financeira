@@ -1431,7 +1431,7 @@ document.addEventListener('click',async e=>{
  if(a==='wiz')wiz(b.dataset.id,stepOf(clients.find(x=>x.id===b.dataset.id)||{}));
  if(a==='wback'){if(await wsave())wiz(W.id,W.step-1)}
  if(a==='wexit'){await wsave();close_();render()}
- if(a==='wnext'){const n=await wsave(),e=$('#we');if(!n){e.textContent='Informe o nome do cliente.';return}
+ if(a==='wnext'){if(W.step===0&&!PHOTO&&!((clients.find(x=>x.id===W.id)||{}).foto)){$('#we').textContent='A foto do cliente é obrigatória.';return}const n=await wsave(),e=$('#we');if(!n){e.textContent='Informe o nome do cliente.';return}
   if(W.step<ST.length-1){const m=REQ[W.step].filter(k=>!n[k]).map(k=>Fm[k][1]);if(m.length){e.textContent='Preencha: '+m.join(', ');return}wiz(n.id,W.step+1)}
   else{const f=falta(n);if(f.length){e.textContent='Pendente: '+f.join(', ');return}n.completo=hoje();await db.collection('clients').doc(n.id).set(n);await rgFlush(n.id);close_();render();cdet(n.id)}}
  if(a==='form')form_(b.dataset.id);
