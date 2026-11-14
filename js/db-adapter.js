@@ -104,5 +104,6 @@
       if (r.error) throw r.error; return r.data;
     });
   };
+  db.storage = sb.storage; // anexos (bucket privado 'anexos')
   window.bahiaDB = db;
 })();

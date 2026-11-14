@@ -47,7 +47,25 @@
         canEdit: function () { return me.funcao === 'admin'; }
       };
       if (name === 'downloads') return { save: function (o) { return saveBlob(o.filename, o.data); } };
-      // Anexos e leitura automática de RG ainda não foram ligados ao novo banco.
+      if (name === 'assets') {
+        var BUCKET = 'anexos';
+        return {
+          upload: async function (blob) {
+            var path = me.uid + '/' + Date.now() + '-' + Math.random().toString(36).slice(2) + '.bin';
+            var st = window.bahiaDB.storage.from(BUCKET);
+            var up = await st.upload(path, blob, { contentType: blob.type || 'application/octet-stream', upsert: false });
+            if (up.error) throw up.error;
+            var sg = await st.createSignedUrl(path, 60 * 60 * 24 * 365);
+            if (sg.error) throw sg.error;
+            return { id: path, url: sg.data.signedUrl, sizeBytes: blob.size, contentType: blob.type || '' };
+          },
+          delete: async function (id) {
+            var r = await window.bahiaDB.storage.from(BUCKET).remove([String(id)]);
+            if (r.error) throw r.error;
+          }
+        };
+      }
+      // Leitura automática de RG fica desligada (usa IA paga). Cadastro é manual.
       return null;
     }
   };
