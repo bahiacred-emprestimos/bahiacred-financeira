@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Importar backup - BahiaCred</title>
+<style>
+  body { margin:0; font:15px/1.4 system-ui,sans-serif; background:#f4f5f7; color:#1d2330;
+         padding-block:24px; padding-left:max(16px,env(safe-area-inset-left,0px)); padding-right:max(16px,env(safe-area-inset-right,0px)); }
+  .box { background:#fff; max-width:520px; margin:auto; border-radius:12px; padding:24px; box-shadow:0 6px 24px #0002; }
+  h1 { font-size:20px; margin:0 0 8px; }
+  button { font:inherit; font-weight:600; padding:12px 16px; border:0; border-radius:8px; background:#1f4e8c; color:#fff; cursor:pointer; margin-top:14px; }
+  button:disabled { opacity:.6; }
+  #log { white-space:pre-wrap; margin-top:14px; font-size:14px; }
+  .warn { color:#8a5a00; font-size:14px; }
+</style>
+</head>
+<body>
+<div class="box">
+  <h1>Importar backup para o banco novo</h1>
+  <p class="warn">Só o administrador consegue importar. Escolha o arquivo <b>.json</b> do backup. O arquivo é lido neste navegador e enviado direto ao Supabase.</p>
+  <input id="arq" type="file" accept=".json,application/json">
+  <div><button id="go" disabled>Importar</button></div>
+  <div id="log"></div>
+</div>
+<script src="js/config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="js/db-adapter.js"></script>
+<script>
+(async function () {
+  var log = document.getElementById('log'), go = document.getElementById('go'), arq = document.getElementById('arq');
+  function say(t) { log.textContent += t + '\n'; }
+  var s = null, p = null;
+  try {
+    s = await window.bahiaDB.session();
+    if (!s) { location.replace('index.html'); return; }
+    p = await window.bahiaDB.perfil();
+  } catch (e) { say('Erro ao verificar o login: ' + ((e && e.message) || e)); return; }
+  if (!p || p.funcao !== 'admin') { say('Acesso só para o administrador.'); arq.disabled = true; return; }
+  go.disabled = false;
+
+  // Remove senhas antigas e dados que não devem ficar em tabela lida por todos
+  function limpa(col, o) {
+    var c = Object.assign({}, o);
+    if (col === 'agents') { delete c.hash; delete c.salt; delete c.cpf; }
+    if (col === 'config' && c.hash) { delete c.hash; delete c.salt; }
+    return c;
+  }
+
+  go.onclick = async function () {
+    var f = arq.files && arq.files[0];
+    if (!f) { say('Escolha o arquivo primeiro.'); return; }
+    go.disabled = true;
+    var d;
+    try { d = JSON.parse(await f.text()); } catch (e) { say('Arquivo inválido.'); go.disabled = false; return; }
+    var total = 0, erros = 0;
+    var jobs = [];
+    Object.keys(d.colecoes || {}).forEach(function (col) {
+      (d.colecoes[col] || []).forEach(function (o, i) {
+        var id = String(o.id != null ? o.id : (col + '-' + i));
+        jobs.push({ col: col, id: id, data: limpa(col, o) });
+      });
+    });
+    Object.keys(d.config || {}).forEach(function (id) {
+      jobs.push({ col: 'config', id: id, data: limpa('config', d.config[id]) });
+    });
+    say('Gravando ' + jobs.length + ' registros...');
+    for (var i = 0; i < jobs.length; i += 20) {
+      var lote = jobs.slice(i, i + 20);
+      await Promise.all(lote.map(function (j) {
+        return window.bahiaDB.collection(j.col).doc(j.id).set(j.data).then(function () { total++; }, function () { erros++; });
+      }));
+    }
+    say('Pronto. Gravados: ' + total + ' | Com erro: ' + erros);
+    go.disabled = false;
+  };
+})();
+</script>
+</body>
+</html>
