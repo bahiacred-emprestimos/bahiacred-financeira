@@ -91,5 +91,18 @@
       return docRef(r.col, r.id);
     }
   };
+  // Login: o app só carrega depois de entrar com e-mail e senha do Supabase.
+  db.signIn = function (email, senha) {
+    return sb.auth.signInWithPassword({ email: email, password: senha }).then(function (r) {
+      if (r.error) throw r.error; return r.data;
+    });
+  };
+  db.signOut = function () { return sb.auth.signOut(); };
+  db.session = function () { return sb.auth.getSession().then(function (r) { return r.data.session; }); };
+  db.perfil = function () {
+    return sb.from('profiles').select('nome,funcao,agent_id').maybeSingle().then(function (r) {
+      if (r.error) throw r.error; return r.data;
+    });
+  };
   window.bahiaDB = db;
 })();
