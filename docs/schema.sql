@@ -1,4 +1,5 @@
 -- Rode este SQL no Supabase: menu SQL Editor > New query > Run.
+-- Passo 1 de 2. Depois rode docs/schema-fase2.sql.
 create table if not exists public.docs (
   col text not null,
   id text not null,
@@ -7,8 +8,6 @@ create table if not exists public.docs (
   primary key (col, id)
 );
 alter table public.docs enable row level security;
--- Fase 1 (provisória): acesso liberado para a chave anon, igual ao sistema atual.
--- Na fase 2 trocamos por login do Supabase e regras por função.
-create policy "acesso provisorio" on public.docs for all using (true) with check (true);
+-- Sem regra aberta: o acesso é liberado pelo schema-fase2.sql, depois do login.
 -- Tempo real: habilita as mudanças da tabela para o app.
 alter publication supabase_realtime add table public.docs;
