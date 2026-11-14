@@ -10,7 +10,8 @@
         document.body.innerHTML = '<div style="font-family:sans-serif;padding:24px">Seu usuário ainda não tem função definida. Fale com o administrador.</div>';
         return null;
       }
-      return { uid: s.user.id, funcao: p.funcao, agent: p.agent_id || null };
+      window.BAHIA_ME = { uid: s.user.id, funcao: p.funcao, agent: p.agent_id || null };
+      return window.BAHIA_ME;
     } catch (e) {
       console.error(e);
       location.replace('index.html');

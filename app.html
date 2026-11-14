@@ -372,7 +372,8 @@ function loginUI(ok){const key=ok?(CFG.hash?'in':canAdm?'setup':'wait'):'load';i
  c.innerHTML=`<div class='lgc'></div><h2>${key==='setup'?'Bem-vindo':'Acesse sua conta'}</h2>${body}`;document.querySelectorAll('.lg').forEach(i=>i.src=LOGO);
  const eye=$('#eye');if(eye)eye.onclick=()=>{const q=$('#lp');q.type=q.type==='password'?'text':'password'};const b=$('#lb');if(b)b.onclick=key==='in'?doLogin:setAdmin;c.querySelectorAll('input').forEach(i=>i.onkeydown=e=>{if(e.key==='Enter'&&b)b.click()})}
 function gate(){const ok=ready===3;
- if(ok&&SES){const v=SES.role==='admin'?(CFG.hash&&CFG.hash.slice(0,8)===SES.h):AG.some(a=>a.id===SES.id&&a.hash&&a.hash.slice(0,8)===SES.h);if(!v){SES=null;try{localStorage.removeItem('bc_s')}catch(_){}}}
+ if(ok&&!SES&&window.BAHIA_ME){const f=window.BAHIA_ME.funcao;SES={role:f==='agente'?'agent':f==='financeiro'?'fin':f==='supervisao'?'sup':'admin',id:window.BAHIA_ME.agent,h:'supabase'}}
+ if(ok&&SES&&!window.BAHIA_ME){const v=SES.role==='admin'?(CFG.hash&&CFG.hash.slice(0,8)===SES.h):AG.some(a=>a.id===SES.id&&a.hash&&a.hash.slice(0,8)===SES.h);if(!v){SES=null;try{localStorage.removeItem('bc_s')}catch(_){}}}
  const on=!!(ok&&SES);document.body.classList.toggle('app',on);document.body.classList.toggle('agent',!!(on&&SES&&SES.role==='agent'));$('#lg').style.display=on?'none':'flex';
  if(!on){adm=false;apply();loginUI(ok);return false}
  adm=SES.role==='admin';apply();document.querySelectorAll('.lg').forEach(i=>{if(!i.src)i.src=LOGO});
