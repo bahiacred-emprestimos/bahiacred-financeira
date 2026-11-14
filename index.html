@@ -41,7 +41,11 @@
   (function () {
     var f = document.getElementById('f'), go = document.getElementById('go'), msg = document.getElementById('msg');
     if (!window.bahiaDB) { msg.textContent = 'Banco não configurado. Avise o administrador.'; return; }
-    window.bahiaDB.session().then(function (s) { if (s) location.replace('app.html'); }).catch(function () {});
+    if (!sessionStorage.getItem('bc_ida')) {
+      window.bahiaDB.session().then(function (s) {
+        if (s) { sessionStorage.setItem('bc_ida', '1'); location.replace('app.html'); }
+      }).catch(function () {});
+    }
     f.addEventListener('submit', function (e) {
       e.preventDefault();
       msg.textContent = '';

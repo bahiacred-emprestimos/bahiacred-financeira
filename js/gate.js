@@ -5,7 +5,14 @@
     try {
       var s = await window.bahiaDB.session();
       if (!s) { location.replace('index.html'); return null; }
-      var p = await window.bahiaDB.perfil();
+      var p;
+      try { p = await window.bahiaDB.perfil(); }
+      catch (e) {
+        // Não volta para o login (evita laço): mostra o erro na tela
+        console.error(e);
+        document.body.innerHTML = '<div style="font-family:sans-serif;padding:24px">Não consegui ler o seu perfil no banco. Erro: ' + String((e && e.message) || e).replace(/</g, '') + '</div>';
+        return null;
+      }
       if (!p || !p.funcao) {
         document.body.innerHTML = '<div style="font-family:sans-serif;padding:24px">Seu usuário ainda não tem função definida. Fale com o administrador.</div>';
         return null;
@@ -14,7 +21,7 @@
       return window.BAHIA_ME;
     } catch (e) {
       console.error(e);
-      location.replace('index.html');
+      document.body.innerHTML = '<div style="font-family:sans-serif;padding:24px">Erro ao conectar com o banco: ' + String((e && e.message) || e).replace(/</g, '') + '</div>';
       return null;
     }
   })();
