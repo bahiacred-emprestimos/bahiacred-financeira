@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BahiaCred - Entrar</title>
+<style>
+  :root { --bg:#f4f5f7; --card:#fff; --tx:#1d2330; --pri:#1f4e8c; --err:#b3261e; --mut:#6b7280; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#14171d; --card:#1e232c; --tx:#e8ebf0; --pri:#6aa3e8; --err:#ff8a80; --mut:#9aa3b2; } }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--tx); font:15px/1.4 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+         min-height:100vh; display:flex; align-items:center; justify-content:center;
+         padding-block:24px; padding-left:max(16px, env(safe-area-inset-left,0px)); padding-right:max(16px, env(safe-area-inset-right,0px)); }
+  .box { background:var(--card); width:min(380px,100%); border-radius:12px; padding:28px 24px; box-shadow:0 6px 24px #0002; }
+  h1 { font-size:20px; margin:0 0 4px; }
+  .sub { color:var(--mut); margin:0 0 20px; font-size:14px; }
+  label { display:block; font-size:13px; color:var(--mut); margin:12px 0 4px; }
+  input { width:100%; font:inherit; padding:11px 12px; border:1px solid #8884; border-radius:8px; background:transparent; color:var(--tx); }
+  button { width:100%; margin-top:20px; font:inherit; font-weight:600; padding:12px; border:0; border-radius:8px; background:var(--pri); color:#fff; cursor:pointer; }
+  button:disabled { opacity:.6; cursor:wait; }
+  #msg { min-height:20px; margin-top:12px; color:var(--err); font-size:14px; }
+</style>
+</head>
+<body>
+<div class="box">
+  <h1>BahiaCred</h1>
+  <p class="sub">Entre com seu e-mail e senha.</p>
+  <form id="f" autocomplete="on">
+    <label for="em">E-mail</label>
+    <input id="em" type="email" name="username" autocomplete="username" required>
+    <label for="sn">Senha</label>
+    <input id="sn" type="password" name="password" autocomplete="current-password" required>
+    <button id="go" type="submit">Entrar</button>
+    <div id="msg" role="alert"></div>
+  </form>
+</div>
+<script src="js/config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="js/db-adapter.js"></script>
+<script>
+  (function () {
+    var f = document.getElementById('f'), go = document.getElementById('go'), msg = document.getElementById('msg');
+    if (!window.bahiaDB) { msg.textContent = 'Banco não configurado. Avise o administrador.'; return; }
+    window.bahiaDB.session().then(function (s) { if (s) location.replace('app.html'); }).catch(function () {});
+    f.addEventListener('submit', function (e) {
+      e.preventDefault();
+      msg.textContent = '';
+      go.disabled = true; go.textContent = 'Entrando...';
+      window.bahiaDB.signIn(document.getElementById('em').value.trim(), document.getElementById('sn').value)
+        .then(function () { location.replace('app.html'); })
+        .catch(function () {
+          msg.textContent = 'E-mail ou senha incorretos.';
+          go.disabled = false; go.textContent = 'Entrar';
+        });
+    });
+  })();
+</script>
+</body>
+</html>
