@@ -98,6 +98,18 @@
     });
   };
   db.signOut = function () { return sb.auth.signOut(); };
+  // Esqueci a senha: manda o link para o e-mail cadastrado (volta para index.html para criar a nova senha)
+  db.resetPassword = function (email) {
+    var base = location.href.split('#')[0].split('?')[0].replace(/[^\/]*$/, '');
+    return sb.auth.resetPasswordForEmail(email, { redirectTo: base + 'index.html' }).then(function (r) {
+      if (r.error) throw r.error; return true;
+    });
+  };
+  db.updatePassword = function (senha) {
+    return sb.auth.updateUser({ password: senha }).then(function (r) {
+      if (r.error) throw r.error; return true;
+    });
+  };
   db.session = function () { return sb.auth.getSession().then(function (r) { return r.data.session; }); };
   db.perfil = function () {
     // Busca só o perfil do usuário logado (evita 'multiple rows' quando o admin enxerga todos)

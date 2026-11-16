@@ -374,7 +374,7 @@ function loginUI(ok){const key=ok?(CFG.hash?'in':canAdm?'setup':'wait'):'load';i
 function gate(){const ok=ready===3;
  if(ok&&!SES&&window.BAHIA_ME){const f=window.BAHIA_ME.funcao;SES={role:f==='agente'?'agent':f==='financeiro'?'fin':f==='supervisao'?'sup':'admin',id:window.BAHIA_ME.agent,h:'supabase'}}
  if(ok&&SES&&!window.BAHIA_ME){const v=SES.role==='admin'?(CFG.hash&&CFG.hash.slice(0,8)===SES.h):AG.some(a=>a.id===SES.id&&a.hash&&a.hash.slice(0,8)===SES.h);if(!v){SES=null;try{localStorage.removeItem('bc_s')}catch(_){}}}
- const on=!!(ok&&SES);document.body.classList.toggle('app',on);document.body.classList.toggle('agent',!!(on&&SES&&SES.role==='agent'));$('#lg').style.display=on?'none':'flex';
+ const on=!!(ok&&SES);document.body.classList.toggle('app',on);document.body.classList.toggle('agent',!!(on&&SES&&SES.role==='agent'));$('#lg').style.display=on?'none':(ok?'flex':'none');
  if(!on){adm=false;apply();loginUI(ok);return false}
  adm=SES.role==='admin';apply();document.querySelectorAll('.lg').forEach(i=>{if(!i.src)i.src=LOGO});
  $('#who').innerHTML=(rl()==='admin'?'Administrador':rl()==='sup'?'Supervisão':rl()==='fin'?'Financeiro':esc(me?me.nome:'Agente'))+"<div style='margin-top:6px;opacity:.6'>Versão 189</div>";return true}
