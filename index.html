@@ -20,6 +20,11 @@ input:focus{outline:2px solid #020780;outline-offset:0;border-color:transparent}
 .pw{position:relative}
 .pw input{padding-right:46px}
 .eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:34px;height:34px;padding:0;border-radius:50%;background:transparent;border:0;color:#253061;cursor:pointer;font-size:14px}
+.brand{text-align:center;margin:0 0 14px;padding-bottom:12px;border-bottom:2px solid #fd7004}
+.brand span{font-size:30px;font-weight:800;letter-spacing:-.5px;font-style:italic}
+.brand .b1{color:#020780}
+.brand .b2{color:#fd7004}
+.brand small{display:block;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#5d6290;margin-top:2px;font-weight:600}
 .hide{display:none!important}
 .lnk{display:block;margin:10px 0 0;width:auto;background:none;border:0;padding:0;color:#020780;font:inherit;font-size:13px;font-weight:600;cursor:pointer;text-align:right}
 #le{color:#c0392b;font-size:13px;min-height:18px;margin-top:8px}
@@ -31,7 +36,9 @@ button#go:disabled{opacity:.6;cursor:wait}
 @media (min-width:820px){
   .stage{display:block;min-height:0;padding:0;width:min(100vw,198.8vh);aspect-ratio:1600/805;margin:0 auto;background-size:100% 100%}
   .card{position:absolute;left:71.06%;top:19.88%;width:23.69%;height:56.52%;max-width:none;border-radius:2.2cqw;padding:2.4% 2.2%;display:flex;flex-direction:column;justify-content:center;container-type:inline-size;font-size:1.05vw}
-  .logo{width:72%;margin:0 auto 1.2%}
+  .brand{margin:0 0 1.4%;padding-bottom:1.2%}
+  .brand span{font-size:2.3vw}
+  .brand small{font-size:.75vw;letter-spacing:.15vw}
   h1{font-size:1.45em;margin:0 0 .2em}
   .sub{font-size:.95em;margin:0 0 .8em}
   label{font-size:.9em;margin:.7em 0 .3em}
@@ -47,7 +54,7 @@ button#go:disabled{opacity:.6;cursor:wait}
 <body>
 <div class="stage">
   <section class="card">
-    <img class="logo" src="img/logo-card.jpg" alt="BahiaCred">
+    <div class="brand" aria-label="BahiaCred Soluções Financeiras"><span class="b1">Bahia</span><span class="b2">cred</span><small>Soluções Financeiras</small></div>
     <h1 id="ttl">Acesse sua conta</h1>
     <p class="sub" id="sub">Entre com seu e-mail e senha.</p>
     <form id="f" autocomplete="on">
