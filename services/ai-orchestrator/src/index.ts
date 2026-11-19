@@ -27,7 +27,8 @@ function validText(v: unknown, max: number): v is string {
 }
 async function openai(task: Task, env: Env) {
   if (!env.OPENAI_API_KEY) throw new Error("openai_not_configured");
-  const model = env.OPENAI_MODEL || "gpt-6";
+  if (!env.OPENAI_MODEL) throw new Error("openai_model_not_configured");
+  const model = env.OPENAI_MODEL;
   const r = await fetch("https://api.openai.com/v1/responses", {
     method: "POST",
     headers: { authorization: "Bearer " + env.OPENAI_API_KEY, "content-type": "application/json" },
@@ -49,7 +50,8 @@ async function openai(task: Task, env: Env) {
 }
 async function anthropic(task: Task, env: Env) {
   if (!env.ANTHROPIC_API_KEY) throw new Error("anthropic_not_configured");
-  const model = env.ANTHROPIC_MODEL || "claude-sonnet-latest";
+  if (!env.ANTHROPIC_MODEL) throw new Error("anthropic_model_not_configured");
+  const model = env.ANTHROPIC_MODEL;
   const r = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: { "x-api-key": env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01", "content-type": "application/json" },
@@ -92,7 +94,7 @@ async function runTask(req: Request, env: Env): Promise<Response> {
     });
   } catch (e) {
     const msg = e instanceof Error ? e.message : "provider_error";
-    const safe = /^(openai|anthropic)_(not_configured|empty_response|upstream_[0-9]+)$/.test(msg) ? msg : "provider_request_failed";
+    const safe = /^(openai|anthropic)_(not_configured|model_not_configured|empty_response|upstream_[0-9]+)$/.test(msg) ? msg : "provider_request_failed";
     return reply({ error: safe }, 502);
   }
 }
