@@ -1,0 +1,8 @@
+{
+  "name": "@bahiacred/ai-orchestrator",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {"dev": "wrangler dev", "typecheck": "tsc --noEmit", "deploy:staging": "wrangler deploy --env staging"},
+  "devDependencies": {"@cloudflare/workers-types": "^4.20261118.0", "typescript": "^5.9.3", "wrangler": "^4.50.0"}
+}

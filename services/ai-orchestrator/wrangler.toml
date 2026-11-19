@@ -1,0 +1,10 @@
+name = "bahiacred-ai-orchestrator"
+main = "src/index.ts"
+compatibility_date = "2026-11-18"
+[observability]
+enabled = true
+[env.staging]
+name = "bahiacred-ai-orchestrator-staging"
+[env.staging.observability]
+enabled = true
+# Secrets must be configured outside Git before staging deployment.

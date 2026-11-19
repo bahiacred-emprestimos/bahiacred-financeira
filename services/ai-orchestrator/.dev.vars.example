@@ -1,0 +1,6 @@
+# Copy to .dev.vars locally; never commit real secrets.
+ORCHESTRATOR_API_TOKEN=replace-with-long-random-token
+OPENAI_API_KEY=
+OPENAI_MODEL=
+ANTHROPIC_API_KEY=
+ANTHROPIC_MODEL=
